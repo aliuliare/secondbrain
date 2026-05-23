@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Segundo Cerebro - Finanzas</title>
 </head>
 <body style="font-family: sans-serif; padding: 20px;">
@@ -13,12 +12,13 @@
     <script>
         async function cargarDatos() {
             document.getElementById('resultado').innerText = "Cargando...";
-            // Llamamos a nuestro propio backend en Python
-            const respuesta = await fetch('/api/finanzas');
-            const json = await respuesta.json();
-            
-            // Pintamos los datos en pantalla
-            document.getElementById('resultado').innerText = JSON.stringify(json.datos, null, 2);
+            try {
+                const respuesta = await fetch('/api/finanzas');
+                const json = await respuesta.json();
+                document.getElementById('resultado').innerText = JSON.stringify(json, null, 2);
+            } catch (error) {
+                document.getElementById('resultado').innerText = "Error cargando los datos.";
+            }
         }
     </script>
 </body>
