@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Segundo Cerebro - Finances</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #080808; 
+            --superficie: #141414;
+            --borde-suave: rgba(212, 175, 55, 0.2); 
+            --borde-fuerte: rgba(212, 175, 55, 0.6); 
+            --texto-principal: #ffffff;
+            --texto-secundario: #a0a0a0;
+            --oro: #D4AF37; 
+        }
+
+        body { 
+            font-family: 'Nunito Sans', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--texto-principal); 
+            padding: 40px 50px; 
+            margin: 0; 
+            line-height: 1.6;
+        }
+
+        /* --- CABECERA PRINCIPAL --- */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        /* Título Rimbombante */
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 4rem;
+            margin: 0;
+            color: var(--texto-principal);
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 15px rgba(212, 175, 55, 0.15);
+        }
+
+        /* Botones de Navegación */
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: var(--texto-principal);
+            border: 1px solid var(--texto-secundario);
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-family: 'Nunito Sans', sans-serif;
+            font-weight: 600;
+            text-decoration: none; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        /* Efectos Hover Específicos por Color */
+        
+        /* 1. Ingresos: Verde */
+        .btn-ingresos:hover {
+            color: #81C784;
+            border-color: #81C784;
+            background-color: rgba(129, 199, 132, 0.05);
+            box-shadow: 0 0 15px rgba(129, 199, 132, 0.2);
+        }
+
+        /* 2. Gastos: Rojo */
+        .btn-gastos:hover {
+            color: #E57373;
+            border-color: #E57373;
+            background-color: rgba(229, 115, 115, 0.05);
+            box-shadow: 0 0 15px rgba(229, 115, 115, 0.2);
+        }
+
+        /* 3. Ahorros: Azul Cian */
+        .btn-ahorros:hover {
+            color: #00BCD4;
+            border-color: #00BCD4;
+            background-color: rgba(0, 188, 212, 0.05);
+            box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+        }
+
+        /* 4. Inversiones: Dorado */
+        .btn-inversiones:hover {
+            color: var(--oro);
+            border-color: var(--oro);
+            background-color: rgba(212, 175, 55, 0.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+
+        /* --- SECCIONES DESPLEGABLES (ACORDEÓN) --- */
+        .accordion-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .accordion-item {
+            background: var(--superficie);
+            border: 1px solid var(--borde-suave);
+            border-radius: 12px;
+            overflow: hidden; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .accordion-item:hover {
+            border-color: var(--borde-fuerte);
+        }
+
+        .accordion-header {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            color: var(--texto-principal);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .arrow-icon {
+            font-size: 1rem;
+            color: var(--oro);
+            transition: transform 0.4s ease;
+            font-family: sans-serif; 
+        }
+
+        .accordion-item.active .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background-color: rgba(0, 0, 0, 0.2); 
+        }
+
+        .accordion-inner {
+            padding: 0 30px 30px 30px;
+            color: var(--texto-secundario);
+            font-size: 1.05rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <h1 class="main-title">Finances</h1>
+        <nav class="nav-menu">
+            <a href="/ingresos" class="nav-btn btn-ingresos">Ingresos</a>
+            <a href="/gastos" class="nav-btn btn-gastos">Gastos</a>
+            <a href="/ahorros" class="nav-btn btn-ahorros">Ahorros</a>
+            <a href="/inversiones" class="nav-btn btn-inversiones">Inversiones</a>
+        </nav>
+    </header>
+
+    <main class="accordion-container">
+        
+        <div class="accordion-item">
+            <button class="accordion-header">
+                Patrimonio neto
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Aquí irá el análisis de tus activos totales menos pasivos. Gráficos de evolución histórica de tu riqueza real.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                Análisis de ahorro
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Aquí se detallarán las tasas de ahorro mensuales, distribución entre diferentes cuentas (Trade Republic, Revolut, etc.) y objetivos.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                Flujo
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Cashflow global. Entradas vs Salidas. Aquí un diagrama de Sankey completo desde los ingresos brutos hasta el ahorro final quedaría espectacular.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        document.querySelectorAll('.accordion-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const accordionItem = button.parentElement;
+                const content = button.nextElementSibling;
+                
+                accordionItem.classList.toggle('active');
+
+                if (accordionItem.classList.contains('active')) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                } else {
+                    content.style.maxHeight = 0;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
