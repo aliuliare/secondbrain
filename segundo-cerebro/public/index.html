@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segundo Cerebro - Finanzas</title>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+    <h1>Mis Finanzas</h1>
+    <button onclick="cargarDatos()">Cargar desde Google Sheets</button>
+    <pre id="resultado" style="background: #f4f4f4; padding: 10px; margin-top: 20px;"></pre>
+
+    <script>
+        async function cargarDatos() {
+            document.getElementById('resultado').innerText = "Cargando...";
+            // Llamamos a nuestro propio backend en Python
+            const respuesta = await fetch('/api/finanzas');
+            const json = await respuesta.json();
+            
+            // Pintamos los datos en pantalla
+            document.getElementById('resultado').innerText = JSON.stringify(json.datos, null, 2);
+        }
+    </script>
+</body>
+</html>
