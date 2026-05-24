@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inversiones</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root { 
+            --bg-color: #080808; 
+            --superficie: #141414; 
+            --borde-suave: rgba(212, 175, 55, 0.2); 
+            --borde-fuerte: rgba(212, 175, 55, 0.6); 
+            --texto-principal: #ffffff;
+            --texto-secundario: #a0a0a0;
+            --oro: #D4AF37; 
+            --verde: #81C784;
+            --rojo: #E57373;
+        }
+
+        body { 
+            font-family: 'Nunito Sans', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--texto-principal); 
+            padding: 40px 50px; 
+            margin: 0; 
+            line-height: 1.6;
+        }
+
+        /* --- CABECERA --- */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 3.5rem;
+            margin: 0;
+            color: var(--texto-principal);
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 15px rgba(212, 175, 55, 0.15);
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: var(--texto-principal);
+            border: 1px solid var(--texto-secundario);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none; 
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover { border-color: var(--oro); color: var(--oro); }
+
+        /* --- KPI SUPERIORES --- */
+        .kpi-container { 
+            display: flex; 
+            gap: 20px; 
+            margin-bottom: 50px; 
+        }
+
+        .kpi-card { 
+            background: var(--superficie); 
+            border: 1px solid var(--borde-fuerte);
+            border-radius: 12px; 
+            padding: 30px; 
+            flex: 1; 
+            text-align: center; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .kpi-card h3 { 
+            margin: 0; 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: var(--texto-secundario); 
+        }
+
+        .kpi-card p { 
+            margin: 15px 0 0 0; 
+            font-size: 2.8rem; 
+            font-family: 'Playfair Display', serif;
+            font-weight: 700; 
+        }
+
+        /* --- TABLA --- */
+        .table-container {
+            background: var(--superficie);
+            border: 1px solid var(--borde-suave);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 1.05rem; }
+        th, td { padding: 18px; text-align: right; border-bottom: 1px solid #333; }
+        th:first-child, td:first-child { text-align: left; }
+        
+        thead th { 
+            color: var(--texto-secundario); 
+            font-family: 'Playfair Display', serif; 
+            font-weight: 600; 
+            letter-spacing: 1px; 
+            font-size: 1.1rem;
+        }
+
+        tbody tr:hover { background-color: rgba(255, 255, 255, 0.03); }
+
+        tfoot {
+            font-weight: 700;
+            color: var(--oro);
+            border-top: 2px solid var(--oro);
+        }
+        tfoot td {
+            padding-top: 25px;
+            font-size: 1.2rem;
+        }
+
+        .text-green { color: var(--verde); }
+        .text-red { color: var(--rojo); }
+
+        .loading { text-align: center; font-size: 1.2rem; color: var(--oro); padding: 50px; font-style: italic; }
+
+        /* --- ACORDEÓN CALCULADORA --- */
+        .accordion-container {
+            margin-top: 60px;
+        }
+
+        .accordion-item {
+            background: var(--superficie);
+            border: 1px solid var(--borde-suave);
+            border-radius: 12px;
+            overflow: hidden; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .accordion-item:hover { border-color: var(--borde-fuerte); }
+
+        .accordion-header {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            color: var(--texto-principal);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .arrow-icon {
+            font-size: 1rem;
+            color: var(--oro);
+            transition: transform 0.4s ease;
+        }
+
+        .accordion-item.active .arrow-icon { transform: rotate(180deg); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background-color: rgba(0, 0, 0, 0.2); 
+        }
+
+        .accordion-inner { padding: 0 30px 30px 30px; }
+
+        /* --- ESTILOS FORMULARIO CALCULADORA --- */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+
+        .input-group label {
+            color: var(--texto-secundario);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select {
+            background-color: #080808;
+            color: var(--texto-principal);
+            border: 1px solid #444;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-family: 'Nunito Sans', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--oro);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+        }
+
+        .input-row { display: flex; gap: 10px; }
+        .input-row input { flex: 2; }
+        .input-row select { flex: 1; }
+
+        .btn-calc {
+            background-color: rgba(212, 175, 55, 0.1);
+            color: var(--oro);
+            border: 1px solid var(--oro);
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-family: 'Nunito Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-calc:hover {
+            background-color: var(--oro);
+            color: #000;
+        }
+
+        .calc-results {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .res-box h4 { margin: 0 0 10px 0; color: var(--texto-secundario); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .res-box p { margin: 0; font-size: 2rem; font-family: 'Playfair Display', serif; font-weight: 700; }
+        .res-highlight { color: var(--oro); font-size: 2.5rem !important; }
+
+        /* Contenedor Gráfica */
+        .chart-wrapper {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            height: 400px; /* Altura fija para que no se deforme */
+            position: relative;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <h1 class="main-title">Inversiones</h1>
+        <nav>
+            <a href="/" class="nav-btn">Volver al Inicio</a>
+        </nav>
+    </header>
+
+    <div id="loading-message" class="loading">
+        Consultando los mercados en tiempo real... (Esto puede tardar unos segundos)
+    </div>
+
+    <div id="contenido-inversiones" style="display: none;">
+        <div class="kpi-container">
+            <div class="kpi-card">
+                <h3>Total Invertido</h3>
+                <p id="kpi-invertido" style="color: white;">0.00 €</p>
+            </div>
+            <div class="kpi-card">
+                <h3>Valor Actual</h3>
+                <p id="kpi-actual" style="color: var(--oro);">0.00 €</p>
+            </div>
+            <div class="kpi-card">
+                <h3>Ganancia / Pérdida</h3>
+                <p id="kpi-beneficio">0.00 €</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fondo (Ticker)</th>
+                        <th>Dinero Invertido</th>
+                        <th>Valor Actual</th>
+                        <th>Rentabilidad (€)</th>
+                        <th>Rentabilidad (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>TOTALES DE LA CARTERA</td>
+                        <td id="foot-invertido">0.00 €</td>
+                        <td id="foot-actual">0.00 €</td>
+                        <td id="foot-beneficio">0.00 €</td>
+                        <td id="foot-porcentaje">0.00 %</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="accordion-container">
+            <div class="accordion-item" id="calc-accordion">
+                <button class="accordion-header" onclick="toggleCalculadora()">
+                    Calculadora de Interés Compuesto
+                    <span class="arrow-icon">▼</span>
+                </button>
+                <div class="accordion-content" id="calc-content">
+                    <div class="accordion-inner">
+                        <div class="calc-grid">
+                            <div class="input-group">
+                                <label>Cantidad Inicial (€)</label>
+                                <input type="number" id="calc-inicial" value="1000" min="0" step="100">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Duración</label>
+                                <div class="input-row">
+                                    <input type="number" id="calc-tiempo" value="10" min="1">
+                                    <select id="calc-tipo-tiempo">
+                                        <option value="anos">Años</option>
+                                        <option value="meses">Meses</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Aportación Periódica (€)</label>
+                                <div class="input-row">
+                                    <input type="number" id="calc-aportacion" value="200" min="0" step="50">
+                                    <select id="calc-freq-aportacion">
+                                        <option value="mensual">Mensual</option>
+                                        <option value="anual">Anual</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Tasa de Interés (%)</label>
+                                <div class="input-row">
+                                    <input type="number" id="calc-interes" value="7" min="0" step="0.1">
+                                    <select id="calc-freq-interes">
+                                        <option value="anual" selected>Anual</option>
+                                        <option value="mensual">Mensual</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn-calc" onclick="calcularInteres()">Proyectar Crecimiento</button>
+
+                        <div class="calc-results" id="resultados-calc" style="display: none;">
+                            <div class="res-box">
+                                <h4>Total Aportado</h4>
+                                <p id="res-aportado" style="color: white;">0.00 €</p>
+                            </div>
+                            <div class="res-box">
+                                <h4>Intereses Generados</h4>
+                                <p id="res-intereses" class="text-green">0.00 €</p>
+                            </div>
+                            <div class="res-box">
+                                <h4>Capital Final</h4>
+                                <p id="res-total" class="res-highlight">0.00 €</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-wrapper" id="grafica-wrapper" style="display: none;">
+                            <canvas id="graficoInteres"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const formatoDinero = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
+        
+        // Variable global para la instancia de Chart.js
+        let graficoInstancia = null;
+
+        function formatearBeneficio(valor, porcentaje = false) {
+            let prefijo = valor > 0 ? '+' : '';
+            let clase = valor > 0 ? 'text-green' : (valor < 0 ? 'text-red' : '');
+            
+            if (porcentaje) {
+                return `<span class="${clase}">${prefijo}${valor.toFixed(2)} %</span>`;
+            }
+            return `<span class="${clase}">${prefijo}${formatoDinero.format(valor)}</span>`;
+        }
+
+        // --- LÓGICA DE LA CALCULADORA ---
+        function toggleCalculadora() {
+            const accordionItem = document.getElementById('calc-accordion');
+            const content = document.getElementById('calc-content');
+            
+            accordionItem.classList.toggle('active');
+
+            if (accordionItem.classList.contains('active')) {
+                // Le damos bastante espacio para la gráfica y resultados
+                content.style.maxHeight = content.scrollHeight + 500 + "px"; 
+            } else {
+                content.style.maxHeight = 0;
+            }
+        }
+
+        function calcularInteres() {
+            const capitalInicial = parseFloat(document.getElementById('calc-inicial').value) || 0;
+            const aportacion = parseFloat(document.getElementById('calc-aportacion').value) || 0;
+            const freqAportacion = document.getElementById('calc-freq-aportacion').value;
+            const tiempo = parseFloat(document.getElementById('calc-tiempo').value) || 0;
+            const tipoTiempo = document.getElementById('calc-tipo-tiempo').value;
+            const tasaInteres = parseFloat(document.getElementById('calc-interes').value) || 0;
+            const freqInteres = document.getElementById('calc-freq-interes').value;
+
+            const mesesTotales = tipoTiempo === 'anos' ? Math.floor(tiempo * 12) : Math.floor(tiempo);
+            const tasaDecimal = tasaInteres / 100;
+
+            let total = capitalInicial;
+            let totalAportado = capitalInicial;
+            
+            // Arrays para alimentar la gráfica
+            const labelsGrafica = [];
+            const dataInvertido = [];
+            const dataIntereses = [];
+
+            // Añadimos el momento inicial a la gráfica
+            if (capitalInicial > 0 || aportacion === 0) {
+                labelsGrafica.push("Inicio");
+                dataInvertido.push(capitalInicial);
+                dataIntereses.push(0);
+            }
+
+            for (let mes = 1; mes <= mesesTotales; mes++) {
+                // 1. Añadir aportaciones
+                if (freqAportacion === 'mensual') {
+                    total += aportacion;
+                    totalAportado += aportacion;
+                } else if (freqAportacion === 'anual' && mes % 12 === 0) {
+                    total += aportacion;
+                    totalAportado += aportacion;
+                }
+
+                // 2. Aplicar interés compuesto
+                if (freqInteres === 'mensual') {
+                    total *= (1 + (tasaDecimal / 12));
+                } else if (freqInteres === 'anual' && mes % 12 === 0) {
+                    total *= (1 + tasaDecimal);
+                }
+                
+                // 3. Capturar el dato para la gráfica (al final de cada año o mes según selector)
+                if (tipoTiempo === 'anos' && mes % 12 === 0) {
+                    labelsGrafica.push(`Año ${mes / 12}`);
+                    dataInvertido.push(totalAportado);
+                    dataIntereses.push(total - totalAportado);
+                } else if (tipoTiempo === 'meses') {
+                    labelsGrafica.push(`Mes ${mes}`);
+                    dataInvertido.push(totalAportado);
+                    dataIntereses.push(total - totalAportado);
+                }
+            }
+
+            const interesesGenerados = total - totalAportado;
+
+            // Mostrar resultados numéricos
+            document.getElementById('res-aportado').innerText = formatoDinero.format(totalAportado);
+            document.getElementById('res-intereses').innerHTML = formatearBeneficio(interesesGenerados);
+            document.getElementById('res-total').innerText = formatoDinero.format(total);
+            
+            document.getElementById('resultados-calc').style.display = 'flex';
+            document.getElementById('grafica-wrapper').style.display = 'block';
+            
+            // Renderizar la gráfica
+            renderizarGrafica(labelsGrafica, dataInvertido, dataIntereses);
+            
+            // Reajustar altura del acordeón
+            setTimeout(() => {
+                const content = document.getElementById('calc-content');
+                content.style.maxHeight = content.scrollHeight + 50 + "px";
+            }, 50);
+        }
+
+        function renderizarGrafica(labels, dataInvertido, dataIntereses) {
+            const ctx = document.getElementById('graficoInteres').getContext('2d');
+            
+            if (graficoInstancia) {
+                graficoInstancia.destroy();
+            }
+
+            graficoInstancia = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Dinero Invertido',
+                            data: dataInvertido,
+                            backgroundColor: '#FDECB1', // Amarillo clarito
+                            borderWidth: 0
+                        },
+                        {
+                            label: 'Intereses Generados',
+                            data: dataIntereses,
+                            backgroundColor: '#D4AF37', // Dorado / Amarillo oscuro
+                            borderWidth: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { 
+                            stacked: true, 
+                            grid: { display: false },
+                            ticks: { color: '#a0a0a0', font: { family: "'Nunito Sans', sans-serif" } }
+                        },
+                        y: { 
+                            stacked: true, 
+                            beginAtZero: true, 
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { 
+                                color: '#a0a0a0', 
+                                font: { family: "'Nunito Sans', sans-serif" },
+                                callback: function(value) { return value + ' €'; }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { 
+                            labels: { color: '#ffffff', font: { family: "'Nunito Sans', sans-serif", size: 14 } } 
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(20, 20, 20, 0.95)',
+                            titleFont: { size: 15, family: "'Playfair Display', serif" },
+                            bodyFont: { size: 14, family: "'Nunito Sans', sans-serif" },
+                            padding: 15,
+                            borderColor: '#D4AF37',
+                            borderWidth: 1,
+                            displayColors: false, // Quita los cuadraditos de color para un diseño más limpio
+                            callbacks: {
+                                // Quitamos el texto normal por defecto
+                                label: function() { return ''; },
+                                // Construimos nuestro bloque personalizado al final
+                                afterBody: function(context) {
+                                    const index = context[0].dataIndex;
+                                    const invertido = dataInvertido[index] || 0;
+                                    const intereses = dataIntereses[index] || 0;
+                                    const total = invertido + intereses;
+
+                                    return [
+                                        `Total: ${formatoDinero.format(total)}`,
+                                        `Invertido: ${formatoDinero.format(invertido)}`,
+                                        `Interés: ${formatoDinero.format(intereses)}`
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        // --- FIN LÓGICA CALCULADORA ---
+
+        async function cargarInversiones() {
+            try {
+                const res = await fetch('/api/inversiones');
+                const data = await res.json();
+
+                if (data.error) {
+                    document.getElementById('loading-message').innerHTML = '<span class="text-red">Error al cargar datos del mercado.</span>';
+                    return;
+                }
+
+                document.getElementById('kpi-invertido').innerText = formatoDinero.format(data.total_invertido);
+                document.getElementById('kpi-actual').innerText = formatoDinero.format(data.total_actual);
+                
+                const kpiBeneficio = document.getElementById('kpi-beneficio');
+                kpiBeneficio.innerHTML = formatearBeneficio(data.beneficio_global) + ` <span style="font-size:1.2rem;">(${formatearBeneficio(data.porcentaje_global, true)})</span>`;
+
+                const tbody = document.getElementById('tabla-body');
+                tbody.innerHTML = '';
+
+                data.inversiones.forEach(fondo => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${fondo.nombre}</strong> <span style="color:#666; font-size:0.85rem;">(${fondo.ticker})</span></td>
+                            <td>${formatoDinero.format(fondo.invertido)}</td>
+                            <td>${formatoDinero.format(fondo.valor_actual)}</td>
+                            <td>${formatearBeneficio(fondo.beneficio)}</td>
+                            <td>${formatearBeneficio(fondo.porcentaje, true)}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('foot-invertido').innerText = formatoDinero.format(data.total_invertido);
+                document.getElementById('foot-actual').innerText = formatoDinero.format(data.total_actual);
+                document.getElementById('foot-beneficio').innerHTML = formatearBeneficio(data.beneficio_global);
+                document.getElementById('foot-porcentaje').innerHTML = formatearBeneficio(data.porcentaje_global, true);
+
+                document.getElementById('loading-message').style.display = 'none';
+                document.getElementById('contenido-inversiones').style.display = 'block';
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loading-message').innerHTML = '<span class="text-red">Hubo un problema de conexión.</span>';
+            }
+        }
+
+        cargarInversiones();
+    </script>
+</body>
+</html>

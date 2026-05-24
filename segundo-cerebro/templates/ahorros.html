@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ahorros</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --bg-color: #080808; 
+            --superficie: #141414; 
+            --borde-suave: rgba(212, 175, 55, 0.2); 
+            --borde-fuerte: rgba(212, 175, 55, 0.6); 
+            --texto-principal: #ffffff;
+            --texto-secundario: #a0a0a0;
+            --oro: #D4AF37; 
+        }
+
+        body { 
+            font-family: 'Nunito Sans', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--texto-principal); 
+            padding: 40px 50px; 
+            margin: 0; 
+            line-height: 1.6;
+        }
+
+        /* --- CABECERA --- */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 3rem;
+            margin: 0;
+            color: var(--texto-principal);
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 15px rgba(212, 175, 55, 0.15);
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: var(--texto-principal);
+            border: 1px solid var(--texto-secundario);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            color: #ffffff;
+            border-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- SECCIÓN KPI TOTAL (GRANDE) --- */
+        .kpi-mega {
+            text-align: center;
+            margin: 40px 0 20px 0;
+        }
+        
+        .kpi-mega h2 {
+            margin: 0;
+            font-family: 'Nunito Sans', sans-serif;
+            font-weight: 400;
+            font-size: 1.2rem;
+            color: var(--texto-secundario);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .kpi-mega .cantidad-gigante {
+            margin: 10px 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 5.5rem;
+            font-weight: 700;
+            color: var(--oro);
+            text-shadow: 0px 4px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        /* --- CALLOUT DE RESUMEN --- */
+        .callout-container {
+            display: flex;
+            justify-content: space-between;
+            background: var(--superficie);
+            border: 1px solid var(--borde-fuerte);
+            border-radius: 12px;
+            padding: 25px 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .callout-item {
+            text-align: center;
+            flex: 1;
+            border-right: 1px solid #333;
+        }
+        .callout-item:last-child {
+            border-right: none;
+        }
+
+        .callout-item h4 {
+            margin: 0;
+            color: var(--texto-secundario);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .callout-item p {
+            margin: 10px 0 0 0;
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--texto-principal);
+        }
+
+        /* --- TARJETAS INDIVIDUALES --- */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .grid-ahorros { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 60px;
+        }
+
+        .card { 
+            background: var(--superficie); 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 1px solid var(--borde-suave); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--oro);
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-family: 'Playfair Display', serif;
+            color: var(--texto-principal);
+            font-size: 1.4rem;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--texto-secundario);
+            font-size: 1rem;
+        }
+
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .progress-bg { 
+            background: #2a2a2a; 
+            height: 8px; 
+            border-radius: 4px; 
+            flex-grow: 1;
+            overflow: hidden; 
+        }
+
+        .progress-fill { 
+            background: var(--oro); 
+            height: 100%; 
+            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); 
+        }
+
+        .progress-percent {
+            font-family: 'Nunito Sans', sans-serif;
+            font-weight: 700;
+            color: var(--oro);
+            font-size: 1rem;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        /* --- SECCIÓN DE PROYECCIONES --- */
+        .proyecciones-box {
+            background: var(--superficie);
+            border: 1px solid var(--borde-suave);
+            border-top: 2px solid var(--oro);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .controles-proyeccion {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 25px;
+        }
+
+        .controles-proyeccion label {
+            margin-bottom: 10px;
+            color: var(--texto-secundario);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select {
+            background-color: #080808;
+            color: var(--texto-principal);
+            border: 1px solid #555;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Nunito Sans', sans-serif;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, select:hover {
+            border-color: var(--oro);
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 1rem; 
+        }
+
+        th, td { 
+            padding: 15px; 
+            text-align: left; 
+            border-bottom: 1px solid #333; 
+        }
+
+        th { 
+            color: var(--texto-secundario); 
+            font-family: 'Playfair Display', serif; 
+            font-weight: 600; 
+            letter-spacing: 1px; 
+        }
+
+        tr:hover { 
+            background-color: rgba(255, 255, 255, 0.03); 
+        }
+
+        .highlight-col {
+            color: var(--oro);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <h1 class="main-title">Ahorros</h1>
+        <nav>
+            <a href="/" class="nav-btn">Volver al Inicio</a>
+        </nav>
+    </header>
+
+    <div class="kpi-mega">
+        <h2>Patrimonio Ahorrado</h2>
+        <div class="cantidad-gigante" id="kpi-total-gigante">0.00 €</div>
+    </div>
+
+    <div class="callout-container">
+        <div class="callout-item">
+            <h4>Total Ahorrado</h4>
+            <p id="callout-ahorrado" style="color: #81C784;">0.00 €</p>
+        </div>
+        <div class="callout-item">
+            <h4>Dinero por Ahorrar</h4>
+            <p id="callout-restante" style="color: #E57373;">0.00 €</p>
+        </div>
+        <div class="callout-item">
+            <h4>Progreso Global</h4>
+            <p id="callout-porcentaje" style="color: var(--oro);">0.0 %</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">Desglose de Metas</h2>
+    <div id="ahorros-container" class="grid-ahorros"></div>
+
+    <h2 class="section-title">Calculadora de Proyecciones</h2>
+    <div class="proyecciones-box">
+        <div class="controles-proyeccion">
+            <label for="selector-fondos">Selecciona un objetivo para calcular aportaciones:</label>
+            <select id="selector-fondos" onchange="renderizarTabla()"></select>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tiempo Objetivo</th>
+                    <th>Aportación Anual</th>
+                    <th>Aportación Mensual</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-proyecciones-body">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Variable global para almacenar los datos que llegan de la API y usarlos en la tabla
+        let datosAhorrosGlobal = [];
+
+        async function cargarAhorros() {
+            try {
+                const res = await fetch('/api/ahorros');
+                const data = await res.json();
+                
+                // 1. Guardamos los datos recibidos
+                let ahorrosOrdenados = data.ahorros;
+
+                // 2. ORDENAMOS LAS TARJETAS POR PORCENTAJE (De mayor a menor)
+                ahorrosOrdenados.sort((a, b) => {
+                    const porcentajeA = a.meta > 0 ? (a.ahorrado / a.meta) * 100 : 0;
+                    const porcentajeB = b.meta > 0 ? (b.ahorrado / b.meta) * 100 : 0;
+                    return porcentajeB - porcentajeA; 
+                    // Nota: Si alguna vez prefieres verlos de menor a mayor, 
+                    // solo tienes que cambiar la línea de arriba por: return porcentajeA - porcentajeB;
+                });
+
+                // 3. Asignamos los datos ya ordenados a la variable global
+                datosAhorrosGlobal = ahorrosOrdenados;
+                
+                const container = document.getElementById('ahorros-container');
+                let totalAhorrado = 0;
+                let totalMeta = 0;
+                
+                // Limpiar contenedor
+                container.innerHTML = '';
+
+                datosAhorrosGlobal.forEach(item => {
+                    // Sumas para el Callout y KPI
+                    totalAhorrado += item.ahorrado;
+                    totalMeta += item.meta;
+
+                    // Cálculo de porcentajes para las tarjetas
+                    let porcentaje = 0;
+                    if (item.meta > 0) {
+                        porcentaje = (item.ahorrado / item.meta) * 100;
+                    }
+                    // Limitamos visualmente el ancho de la barra al 100% por si ahorras de más
+                    const visualWidth = porcentaje > 100 ? 100 : porcentaje;
+
+                    container.innerHTML += `
+                        <div class="card">
+                            <h3>${item.categoria}</h3>
+                            <p>${item.ahorrado.toLocaleString('es-ES', {minimumFractionDigits: 2, maximumFractionDigits: 2})} € / ${item.meta.toLocaleString('es-ES', {minimumFractionDigits: 2, maximumFractionDigits: 2})} €</p>
+                            <div class="progress-wrapper">
+                                <div class="progress-bg"><div class="progress-fill" style="width: ${visualWidth}%"></div></div>
+                                <div class="progress-percent">${porcentaje.toFixed(1)}%</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // --- ACTUALIZAR KPI Y CALLOUTS ---
+                const dineroRestante = Math.max(0, totalMeta - totalAhorrado);
+                let porcentajeGlobal = 0;
+                if (totalMeta > 0) {
+                    porcentajeGlobal = (totalAhorrado / totalMeta) * 100;
+                }
+
+                // Formateamos los números para que se vean bonitos (ej: 1.000,00)
+                const formatoDinero = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
+
+                document.getElementById('kpi-total-gigante').innerText = formatoDinero.format(totalAhorrado);
+                document.getElementById('callout-ahorrado').innerText = formatoDinero.format(totalAhorrado);
+                document.getElementById('callout-restante').innerText = formatoDinero.format(dineroRestante);
+                document.getElementById('callout-porcentaje').innerText = porcentajeGlobal.toFixed(1) + ' %';
+
+                // --- PREPARAR SELECTOR DE PROYECCIONES ---
+                prepararSelector();
+
+            } catch (error) {
+                console.error("Error cargando los ahorros:", error);
+                document.getElementById('ahorros-container').innerHTML = '<p style="color: red;">Error al cargar los datos. Revisa la conexión con el servidor.</p>';
+            }
+        }
+
+        function prepararSelector() {
+            const selector = document.getElementById('selector-fondos');
+            selector.innerHTML = '<option value="todos">Total de incompletos (Suma global pendiente)</option>';
+
+            datosAhorrosGlobal.forEach((item, index) => {
+                // Solo añadimos al selector los fondos que aún no están al 100%
+                if (item.ahorrado < item.meta) {
+                    selector.innerHTML += `<option value="${index}">${item.categoria}</option>`;
+                }
+            });
+
+            // Generamos la tabla por defecto con el valor "todos"
+            renderizarTabla();
+        }
+
+        function renderizarTabla() {
+            const selector = document.getElementById('selector-fondos');
+            const tbody = document.getElementById('tabla-proyecciones-body');
+            const valorSeleccionado = selector.value;
+            
+            let cantidadObjetivo = 0;
+
+            // Calculamos cuánto dinero falta en base a la selección
+            if (valorSeleccionado === 'todos') {
+                datosAhorrosGlobal.forEach(item => {
+                    if (item.ahorrado < item.meta) {
+                        cantidadObjetivo += (item.meta - item.ahorrado);
+                    }
+                });
+            } else {
+                const item = datosAhorrosGlobal[parseInt(valorSeleccionado)];
+                cantidadObjetivo = item.meta - item.ahorrado;
+            }
+
+            tbody.innerHTML = '';
+
+            // Si por alguna razón la cantidad es 0 o negativa
+            if (cantidadObjetivo <= 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 30px;">¡Este objetivo ya está cubierto! 🎉</td></tr>';
+                return;
+            }
+
+            const formato = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
+
+            // Bucle del año 1 al 10
+            for (let años = 1; años <= 20; años++) {
+                const aportacionAnual = cantidadObjetivo / años;
+                const aportacionMensual = aportacionAnual / 12;
+
+                const textoAño = años === 1 ? '1 año' : `${años} años`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>En ${textoAño}</td>
+                        <td>${formato.format(aportacionAnual)}</td>
+                        <td class="highlight-col">${formato.format(aportacionMensual)}</td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Inicializamos todo al cargar la página
+        cargarAhorros();
+    </script>
+</body>
+</html>
