@@ -210,10 +210,9 @@ def obtener_ahorros():
     
     
 # Esta ruta trae los datos de Google Sheets
+# Esta ruta trae los datos de Google Sheets
 @app.route('/api/finanzas')
 def obtener_finanzas():
-    # Recuerda poner aquí tu URL secreta de Google Apps Script
-    
     try:
         respuesta = requests.get(GOOGLE_SCRIPT_URL)
         datos_brutos = respuesta.json()
@@ -242,12 +241,11 @@ def obtener_finanzas():
                 }
                 ingresos_limpios.append(ingreso)
                 
-                # --- DEBUG DE GASTOS ---
+        # --- DEBUG DE GASTOS ---
         respuesta_gastos = requests.get(GOOGLE_SCRIPT_URL + "?hoja=gastos")
         datos_gastos = respuesta_gastos.json()
         gastos_limpios = []
         
-        # Quitamos el slicing [15:] y ajustamos el len() a 6
         for fila in datos_gastos:
             # Ahora pedimos que tenga al menos 6 columnas
             if len(fila) >= 6 and fila[0] != "":
@@ -268,10 +266,11 @@ def obtener_finanzas():
                 }
                 gastos_limpios.append(gasto)
 
-            return jsonify({"ingresos": ingresos_limpios, "gastos": gastos_limpios})
+        # ¡CORREGIDO! El return ahora está completamente fuera de los bucles for
+        return jsonify({"ingresos": ingresos_limpios, "gastos": gastos_limpios})
     
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     # El debug=True es magia: actualiza la web al instante si cambias el código
